@@ -1,6 +1,7 @@
 'use client'
 import Link from 'next/link'
 import {useEffect,useMemo,useState} from 'react'
+import './feed.css'
 
 const cats=['Tout','Lions de l’Atlas','Botola Pro','Marocains du monde','Mercato','Jeunes talents']
 export default function FilActualite(){
