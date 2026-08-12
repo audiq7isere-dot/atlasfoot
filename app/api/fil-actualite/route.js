@@ -1,3 +1,6 @@
+export const dynamic='force-dynamic'
+export const revalidate=0
+
 const feeds=[
  {category:'Lions de l’Atlas',q:'Maroc football équipe nationale OR "Lions de l Atlas"'},
  {category:'Botola Pro',q:'Botola Pro football Maroc'},
@@ -23,22 +26,22 @@ function parse(xml,category){
 export async function GET(){
  try{
    const results=await Promise.allSettled(feeds.map(async f=>{
-     const url='https://news.google.com/rss/search?q='+encodeURIComponent(f.q)+'&hl=fr&gl=FR&ceid=FR:fr'
-     const r=await fetch(url,{headers:{'user-agent':'AtlasFoot/1.0'},next:{revalidate:300}})
+     const url='https://news.google.com/rss/search?q='+encodeURIComponent(f.q)+'&hl=fr&gl=FR&ceid=FR:fr&when=1d'
+     const r=await fetch(url,{headers:{'user-agent':'AtlasFoot/1.0'},cache:'no-store'})
      if(!r.ok) throw new Error('RSS '+r.status)
      const parsed=parse(await r.text(),f.category)
      const seenLocal=new Set()
      return parsed.filter(x=>{const k=x.title.toLowerCase().replace(/\W/g,'');if(seenLocal.has(k))return false;seenLocal.add(k);return true})
-       .sort((a,b)=>new Date(b.publishedAt)-new Date(a.publishedAt)).slice(0,18)
+       .sort((a,b)=>new Date(b.publishedAt)-new Date(a.publishedAt)).slice(0,22)
    }))
 
    const byCategory=results.flatMap(r=>r.status==='fulfilled'?r.value:[])
    const seen=new Set()
    const items=byCategory.filter(x=>{const k=x.title.toLowerCase().replace(/\W/g,'');if(seen.has(k))return false;seen.add(k);return true})
-     .sort((a,b)=>new Date(b.publishedAt)-new Date(a.publishedAt)).slice(0,90)
+     .sort((a,b)=>new Date(b.publishedAt)-new Date(a.publishedAt)).slice(0,100)
 
-   return Response.json({updatedAt:new Date().toISOString(),items},{headers:{'Cache-Control':'public, s-maxage=300, stale-while-revalidate=600'}})
+   return Response.json({updatedAt:new Date().toISOString(),items},{headers:{'Cache-Control':'no-store, no-cache, must-revalidate, max-age=0'}})
  }catch(e){
-   return Response.json({updatedAt:new Date().toISOString(),items:[],error:'Flux temporairement indisponible'},{status:200})
+   return Response.json({updatedAt:new Date().toISOString(),items:[],error:'Flux temporairement indisponible'},{status:200,headers:{'Cache-Control':'no-store'}})
  }
 }
