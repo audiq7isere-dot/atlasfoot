@@ -1,16 +1,13 @@
-'use client'
 import Link from 'next/link'
-import {useSearchParams} from 'next/navigation'
 
-// Redeploy marker: article params fix
-export default function Actualite(){
- const params=useSearchParams()
- const title=params.get('title')||'Actualité AtlasFoot'
- const source=params.get('source')||'Source externe'
- const category=params.get('category')||'Actualité'
- const publishedAt=params.get('publishedAt')||''
- const summary=params.get('summary')||''
- const link=params.get('link')||''
+export default async function Actualite({searchParams}){
+ const params=await searchParams
+ const title=params?.title||'Actualité AtlasFoot'
+ const source=params?.source||'Source externe'
+ const category=params?.category||'Actualité'
+ const publishedAt=params?.publishedAt||''
+ const summary=params?.summary||''
+ const link=params?.link||''
  const date=publishedAt?new Date(publishedAt):null
  const dateText=date&&!isNaN(date)?date.toLocaleString('fr-FR',{dateStyle:'long',timeStyle:'short'}):''
  return <><header className="top"><div className="wrap nav"><Link className="brand" href="/">ATLAS<b>FOOT</b></Link><nav className="navlinks"><Link href="/">Actualités</Link><Link href="/fil-actualite">⚡ Actualité en direct</Link><Link href="/videos">🎥 Vidéos</Link><Link href="/cafe">☕ Café</Link></nav></div></header>
