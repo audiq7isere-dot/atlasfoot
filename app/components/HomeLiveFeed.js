@@ -17,7 +17,6 @@ export default function HomeLiveFeed(){
      {!liveLoading&&!liveError&&matches.length===0&&<div className="homeLiveLoading">Aucun match avec Marocain en direct pour le moment.</div>}
      {!liveLoading&&!liveError&&matches.map(m=><div className="homeLiveScore" key={m.id}><div className="homeLiveMeta"><span>🔴 {m.status==='HT'?'Mi-temps':m.minute?m.minute+"'":m.status}</span><span>{m.league}</span></div><h3>{m.home} <b>{m.homeGoals} — {m.awayGoals}</b> {m.away}</h3><small>🇲🇦 {m.moroccans.map(p=>p.name).join(' • ')}</small></div>)}
     </div>
-    <small className="railRefresh">Actualisé toutes les 2 minutes</small>
    </section>
    <section className="railCard newsFeedCard">
     <div className="homeLiveHead"><div><span className="liveDot"></span><b>FIL D’ACTUALITÉ</b><small>Les dernières infos du football marocain</small></div><Link href="/fil-actualite">Tout voir →</Link></div>
