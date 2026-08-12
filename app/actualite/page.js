@@ -1,14 +1,47 @@
 import Link from 'next/link'
 
+const decode=s=>(s||'')
+ .replace(/&nbsp;|&#160;/gi,' ')
+ .replace(/&amp;/g,'&').replace(/&#39;|&apos;/g,"'").replace(/&quot;/g,'"')
+ .replace(/&lt;/g,'<').replace(/&gt;/g,'>')
+ .replace(/<[^>]+>/g,' ')
+ .replace(/\s+/g,' ').trim()
+
+async function enrich(link,fallback){
+ const cleanFallback=decode(fallback)
+ if(!link)return {summary:cleanFallback,points:[]}
+ try{
+   const r=await fetch(link,{redirect:'follow',headers:{'user-agent':'Mozilla/5.0 AtlasFoot/1.0','accept-language':'fr-FR,fr;q=0.9'},next:{revalidate:900}})
+   if(!r.ok)return {summary:cleanFallback,points:[]}
+   const html=await r.text()
+   const meta=(name)=>{
+     const patterns=[
+       new RegExp(`<meta[^>]+(?:name|property)=["']${name}["'][^>]+content=["']([^"']+)["'][^>]*>`,'i'),
+       new RegExp(`<meta[^>]+content=["']([^"']+)["'][^>]+(?:name|property)=["']${name}["'][^>]*>`,'i')
+     ]
+     for(const p of patterns){const m=html.match(p);if(m?.[1])return decode(m[1])}
+     return ''
+   }
+   const description=meta('description')||meta('og:description')||meta('twitter:description')
+   const sourceText=description.length>60?description:cleanFallback
+   const sentences=decode(sourceText).split(/(?<=[.!?])\s+/).filter(s=>s.length>35)
+   const summary=sentences.slice(0,3).join(' ').slice(0,700) || cleanFallback
+   const points=sentences.slice(0,4).map(s=>s.replace(/^[-–•]\s*/, '').trim()).filter(Boolean)
+   return {summary,points}
+ }catch{return {summary:cleanFallback,points:[]}}
+}
+
 export default async function Actualite({searchParams}){
  const params=await searchParams
- const title=params?.title||'Actualité AtlasFoot'
- const source=params?.source||'Source externe'
- const category=params?.category||'Actualité'
+ const title=decode(params?.title)||'Actualité AtlasFoot'
+ const source=decode(params?.source)||'Source externe'
+ const category=decode(params?.category)||'Actualité'
  const publishedAt=params?.publishedAt||''
- const summary=params?.summary||''
  const link=params?.link||''
  const date=publishedAt?new Date(publishedAt):null
  const dateText=date&&!isNaN(date)?date.toLocaleString('fr-FR',{dateStyle:'long',timeStyle:'short'}):''
+ const enriched=await enrich(link,params?.summary||'')
+ const summary=enriched.summary || `AtlasFoot a repéré cette information concernant ${category.toLowerCase()}. La source originale est indiquée ci-dessous pour consulter tous les détails.`
+ const points=enriched.points.length?enriched.points:[title]
  return <><header className="top"><div className="wrap nav"><Link className="brand" href="/">ATLAS<b>FOOT</b></Link><nav className="navlinks"><Link href="/">Actualités</Link><Link href="/fil-actualite">⚡ Actualité en direct</Link><Link href="/videos">🎥 Vidéos</Link><Link href="/cafe">☕ Café</Link></nav></div></header>
- <main className="wrap" style={{maxWidth:900,padding:'38px 0 70px'}}><Link href="/fil-actualite" className="btn dark">← Retour au fil</Link><article className="card" style={{marginTop:18,padding:'34px'}}><span className="eyebrow">{category}</span><h1 style={{fontSize:'clamp(32px,5vw,58px)',lineHeight:1.04,margin:'14px 0 12px'}}>{title}</h1><div className="meta">{dateText}{dateText?' · ':''}{source}</div><div style={{height:1,background:'#26382f',margin:'28px 0'}}></div><h2>Ce qu’il faut retenir</h2><p style={{fontSize:19,lineHeight:1.75}}>{summary||`AtlasFoot a repéré cette information concernant ${category.toLowerCase()}. Consulte la source originale ci-dessous pour retrouver tous les détails publiés par le média.`}</p><div className="card" style={{marginTop:34,background:'#101d17'}}><span className="eyebrow">SOURCE</span><h3 style={{marginTop:8}}>{source}</h3><p className="meta">AtlasFoot présente un résumé de l’information et crédite le média à l’origine de la publication.</p>{link&&<a className="btn red" href={link} target="_blank" rel="noreferrer">Voir l’article original →</a>}</div></article><div className="card" style={{marginTop:20}}><h3>☕ Une réaction ?</h3><p>Discute de cette actualité avec les supporters marocains dans le Café des Lions.</p><Link className="btn dark" href="/cafe">Réagir dans le Café →</Link></div></main></>}
+ <main className="wrap" style={{maxWidth:900,padding:'38px 0 70px'}}><Link href="/fil-actualite" className="btn dark">← Retour au fil</Link><article className="card" style={{marginTop:18,padding:'34px'}}><span className="eyebrow">{category}</span><h1 style={{fontSize:'clamp(32px,5vw,58px)',lineHeight:1.04,margin:'14px 0 12px'}}>{title}</h1><div className="meta">{dateText}{dateText?' · ':''}{source}</div><div style={{height:1,background:'#26382f',margin:'28px 0'}}></div><h2>Ce qu’il faut retenir</h2><p style={{fontSize:19,lineHeight:1.75}}>{summary}</p><div className="card" style={{marginTop:28,background:'#101d17'}}><span className="eyebrow">POINTS CLÉS</span><ul style={{margin:'14px 0 0',paddingLeft:22,lineHeight:1.7}}>{points.slice(0,4).map((p,i)=><li key={i} style={{marginBottom:8}}>{p}</li>)}</ul></div><div className="card" style={{marginTop:28,background:'#101d17'}}><span className="eyebrow">SOURCE</span><h3 style={{marginTop:8}}>{source}</h3><p className="meta">AtlasFoot synthétise l’information et crédite le média à l’origine de la publication.</p>{link&&<a className="btn red" href={link} target="_blank" rel="noreferrer">Voir l’article original →</a>}</div></article><div className="card" style={{marginTop:20}}><h3>☕ Une réaction ?</h3><p>Discute de cette actualité avec les supporters marocains dans le Café des Lions.</p><Link className="btn dark" href="/cafe">Réagir dans le Café →</Link></div></main></>}
