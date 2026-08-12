@@ -31,18 +31,17 @@ async function api(path,revalidate){
 
 export async function GET(){
  try{
-  // Le cache partagé empêche chaque visiteur de consommer une nouvelle requête API.
-  // 15 min par défaut reste compatible avec les 100 requêtes/jour du plan gratuit.
-  const {response:fixtures,remaining,limit}=await api('/fixtures?live=all',900)
+  // Un seul appel API-Football partagé toutes les 2 minutes, quel que soit le nombre de visiteurs.
+  const {response:fixtures,remaining,limit}=await api('/fixtures?live=all',120)
   const matches=fixtures.map(f=>{
     const home=moroccansForTeam(f.teams?.home?.name),away=moroccansForTeam(f.teams?.away?.name)
     if(!home.length&&!away.length)return null
-    const moroccans=[...home.map(name=>({name,team:f.teams.home.name,starter:null})),...away.map(name=>({name,team:f.teams.away.name,starter:null}))]
+    const moroccans=[...home.map(name=>({name,team:f.teams.home.name})),...away.map(name=>({name,team:f.teams.away.name}))]
     return {id:f.fixture.id,minute:f.fixture.status.elapsed,status:f.fixture.status.short,league:f.league.name,country:f.league.country,home:f.teams.home.name,away:f.teams.away.name,homeLogo:f.teams.home.logo,awayLogo:f.teams.away.logo,homeGoals:f.goals.home,awayGoals:f.goals.away,moroccans}
   }).filter(Boolean)
-  return NextResponse.json({ok:true,updatedAt:new Date().toISOString(),matches,refreshSeconds:900,quota:{remaining,limit}},{headers:{'Cache-Control':'public, s-maxage=900, stale-while-revalidate=60'}})
+  return NextResponse.json({ok:true,updatedAt:new Date().toISOString(),matches,refreshSeconds:120,quota:{remaining,limit}},{headers:{'Cache-Control':'public, s-maxage=120, stale-while-revalidate=30'}})
  }catch(e){
   const quota=e.quota||e.message==='QUOTA_EXCEEDED'
-  return NextResponse.json({ok:false,reason:quota?'quota':'api',error:quota?'Quota API-Football atteint. Réinitialisation quotidienne nécessaire ou passage au plan Pro.':e.message,matches:[],refreshSeconds:900},{status:quota?429:500,headers:{'Cache-Control':'no-store'}})
+  return NextResponse.json({ok:false,reason:quota?'quota':'api',error:quota?'Quota API-Football atteint. Le Live reprendra après réinitialisation du quota.':e.message,matches:[],refreshSeconds:120},{status:quota?429:500,headers:{'Cache-Control':'no-store'}})
  }
 }
