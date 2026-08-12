@@ -2,6 +2,7 @@
 import Link from 'next/link'
 import {useSearchParams} from 'next/navigation'
 
+// Redeploy marker: article params fix
 export default function Actualite(){
  const params=useSearchParams()
  const title=params.get('title')||'Actualité AtlasFoot'
