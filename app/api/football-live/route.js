@@ -25,6 +25,10 @@ const MOROCCAN_CLUBS=[
 const norm=s=>String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim()
 function moroccansForTeam(name){const n=norm(name);for(const [team,players] of Object.entries(TEAM_MOROCCANS)) if(n===norm(team)||n.includes(norm(team))||norm(team).includes(n)) return players;return []}
 function isMoroccanClub(name){const n=norm(name);return MOROCCAN_CLUBS.some(team=>n===norm(team)||n.includes(norm(team))||norm(team).includes(n))}
+function isMoroccoNationalTeam(name){
+  const n=norm(name)
+  return n==='morocco'||n==='maroc'||n.startsWith('morocco ')||n.startsWith('maroc ')||n.includes('morocco u')||n.includes('maroc u')||n.includes('morocco women')||n.includes('morocco w')||n.includes('morocco olympic')||n.includes('morocco olympics')
+}
 
 async function api(path,revalidate){
  const key=process.env.API_FOOTBALL_KEY
@@ -43,7 +47,6 @@ async function api(path,revalidate){
 
 export async function GET(){
  try{
-  // Un seul appel API-Football partagé toutes les 2 minutes, quel que soit le nombre de visiteurs.
   const {response:fixtures,remaining,limit}=await api('/fixtures?live=all',120)
   const matches=fixtures.map(f=>{
     const homeName=f.teams?.home?.name||''
@@ -51,7 +54,8 @@ export async function GET(){
     const homePlayers=moroccansForTeam(homeName)
     const awayPlayers=moroccansForTeam(awayName)
     const moroccanClubMatch=norm(f.league?.country)==='morocco'||isMoroccanClub(homeName)||isMoroccanClub(awayName)
-    if(!homePlayers.length&&!awayPlayers.length&&!moroccanClubMatch)return null
+    const moroccanNationalMatch=isMoroccoNationalTeam(homeName)||isMoroccoNationalTeam(awayName)
+    if(!homePlayers.length&&!awayPlayers.length&&!moroccanClubMatch&&!moroccanNationalMatch)return null
     const moroccans=[...homePlayers.map(name=>({name,team:homeName})),...awayPlayers.map(name=>({name,team:awayName}))]
     return {
       id:f.fixture.id,
@@ -66,7 +70,8 @@ export async function GET(){
       homeGoals:f.goals.home,
       awayGoals:f.goals.away,
       moroccans,
-      moroccanClubMatch
+      moroccanClubMatch,
+      moroccanNationalMatch
     }
   }).filter(Boolean)
   return NextResponse.json({ok:true,updatedAt:new Date().toISOString(),matches,refreshSeconds:120,quota:{remaining,limit}},{headers:{'Cache-Control':'public, s-maxage=120, stale-while-revalidate=30'}})
