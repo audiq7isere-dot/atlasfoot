@@ -8,8 +8,9 @@ export default function HomeLiveFeed(){
  async function loadNews(){try{const r=await fetch('/api/fil-actualite?ts='+Date.now(),{cache:'no-store'});const j=await r.json();setItems((j.items||[]).slice(0,16))}catch{}finally{setNewsLoading(false)}}
  useEffect(()=>{loadLive();loadNews();const liveId=setInterval(loadLive,refreshSeconds*1000);const newsId=setInterval(loadNews,120000);return()=>{clearInterval(liveId);clearInterval(newsId)}},[refreshSeconds])
  const time=d=>{const x=new Date(d);return isNaN(x)?'':x.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})}
- return <aside className="homeLiveRail separatedRail">
-   <section className="railCard liveScoreCard">
+ const cardStyle={background:'linear-gradient(180deg,#111c17,#0b1510)',border:'1px solid #26382f',borderRadius:'18px',padding:'14px',boxShadow:'0 18px 50px #0003',overflow:'hidden'}
+ return <aside className="homeLiveRail" style={{position:'sticky',top:'88px',marginTop:'30px',background:'transparent',border:'0',borderRadius:0,padding:0,boxShadow:'none',display:'flex',flexDirection:'column',gap:'24px'}}>
+   <section className="liveScoreCard" style={{...cardStyle,borderTop:'3px solid #d91f37'}}>
     <div className="homeLiveHead"><div><span className="liveDot"></span><b>LIVE SCORE</b><small>Matchs avec des joueurs marocains</small></div></div>
     <div className="homeLiveScores">
      {liveLoading&&<div className="homeLiveLoading">Chargement des scores…</div>}
@@ -18,7 +19,7 @@ export default function HomeLiveFeed(){
      {!liveLoading&&!liveError&&matches.map(m=><div className="homeLiveScore" key={m.id}><div className="homeLiveMeta"><span>🔴 {m.status==='HT'?'Mi-temps':m.minute?m.minute+"'":m.status}</span><span>{m.league}</span></div><h3>{m.home} <b>{m.homeGoals} — {m.awayGoals}</b> {m.away}</h3><small>🇲🇦 {m.moroccans.map(p=>p.name).join(' • ')}</small></div>)}
     </div>
    </section>
-   <section className="railCard newsFeedCard">
+   <section className="newsFeedCard" style={{...cardStyle,borderTop:'3px solid #18a65a'}}>
     <div className="homeLiveHead"><div><span className="liveDot"></span><b>FIL D’ACTUALITÉ</b><small>Les dernières infos du football marocain</small></div><Link href="/fil-actualite">Tout voir →</Link></div>
     <div className="homeLiveList">
      {newsLoading&&<div className="homeLiveLoading">Chargement des dernières infos…</div>}
