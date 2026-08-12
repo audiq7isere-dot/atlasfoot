@@ -6,7 +6,7 @@ import {createClient} from '@supabase/supabase-js'
 const supabase=createClient(process.env.NEXT_PUBLIC_SUPABASE_URL||'https://czwiqkbojqqdatqohnrs.supabase.co',process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY||'sb_publishable_9H0YCCeSFQ-KgWucLDQ__w_au0A3nqP')
 const squad=[
 {name:'Yassine Bounou',role:'GK'},{name:'Munir Mohamedi',role:'GK'},{name:'El Mehdi Benabid',role:'GK'},
-{name:'Achraf Hakimi',role:'RB'},{name:'Noussair Mazraoui',role:'LB'},{name:'Nayef Aguerd',role:'CB'},{name:'Chadi Riad',role:'CB'},{name:'Romain Saïss',role:'CB'},{name:'Adam Masina',role:'CB'},{name:'Yahya Attiat-Allah',role:'LB'},
+{name:'Achraf Hakimi',role:'RB'},{name:'Noussair Mazraoui',role:'LB'},{name:'Nayef Aguerd',role:'CB'},{name:'Chadi Riad',role:'CB'},{name:'Issa Diop',role:'CB'},{name:'Romain Saïss',role:'CB'},{name:'Adam Masina',role:'CB'},{name:'Yahya Attiat-Allah',role:'LB'},
 {name:'Sofyan Amrabat',role:'DM'},{name:'Azzedine Ounahi',role:'CM'},{name:'Bilal El Khannouss',role:'CM'},{name:'Ismael Saibari',role:'CM'},{name:'Neil El Aynaoui',role:'CM'},{name:'Eliesse Ben Seghir',role:'AM'},{name:'Oussama Targhalline',role:'DM'},
 {name:'Brahim Díaz',role:'RW'},{name:'Abde Ezzalzouli',role:'LW'},{name:'Soufiane Rahimi',role:'FW'},{name:'Ayoub El Kaabi',role:'ST'},{name:'Youssef En-Nesyri',role:'ST'},{name:'Ilias Akhomach',role:'RW'},{name:'Chemsdine Talbi',role:'RW'}]
 const formations={
