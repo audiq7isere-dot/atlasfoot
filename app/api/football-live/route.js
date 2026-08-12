@@ -12,19 +12,8 @@ const TEAM_MOROCCANS={
   'lille':['Hamza Igamane'],'feyenoord':['Oussama Targhalline']
 }
 
-const MOROCCAN_CLUBS=[
-  'wydad','wydad ac','wydad casablanca','raja','raja ca','raja casablanca',
-  'far rabat','as far','far de rabat','royal armed forces','rs berkane','renaissance berkane',
-  'fus rabat','fath union sport','moghreb tetouan','moghreb de tetouan','maghreb fez','mas fes','mas de fes',
-  'olympic safi','olympique safi','hassania agadir','hassania union sport agadir','ittihad tanger','ir tanger',
-  'difaa el jadida','difaâ el jadida','difa el jadida','jeunesse sportive soualem','js soualem',
-  'union touarga','uts rabat','chabab mohammédia','chabab mohammedia','codm meknes','mouloudia oujda',
-  'youssoufia berrechid','renaissance zemamra','rca zemamra','kawkab marrakech','kac marrakech'
-]
-
 const norm=s=>String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim()
 function moroccansForTeam(name){const n=norm(name);for(const [team,players] of Object.entries(TEAM_MOROCCANS)) if(n===norm(team)||n.includes(norm(team))||norm(team).includes(n)) return players;return []}
-function isMoroccanClub(name){const n=norm(name);return MOROCCAN_CLUBS.some(team=>n===norm(team)||n.includes(norm(team))||norm(team).includes(n))}
 function isMoroccoNationalTeam(name){
   const n=norm(name)
   return n==='morocco'||n==='maroc'||n.startsWith('morocco ')||n.startsWith('maroc ')||n.includes('morocco u')||n.includes('maroc u')||n.includes('morocco women')||n.includes('morocco w')||n.includes('morocco olympic')||n.includes('morocco olympics')
@@ -47,15 +36,16 @@ async function api(path,revalidate){
 
 export async function GET(){
  try{
+  // Un seul flux live : joueurs marocains à l'étranger + sélections du Maroc.
+  // Les clubs marocains ne sont plus recherchés ni affichés.
   const {response:fixtures,remaining,limit}=await api('/fixtures?live=all',120)
   const matches=fixtures.map(f=>{
     const homeName=f.teams?.home?.name||''
     const awayName=f.teams?.away?.name||''
     const homePlayers=moroccansForTeam(homeName)
     const awayPlayers=moroccansForTeam(awayName)
-    const moroccanClubMatch=norm(f.league?.country)==='morocco'||isMoroccanClub(homeName)||isMoroccanClub(awayName)
     const moroccanNationalMatch=isMoroccoNationalTeam(homeName)||isMoroccoNationalTeam(awayName)
-    if(!homePlayers.length&&!awayPlayers.length&&!moroccanClubMatch&&!moroccanNationalMatch)return null
+    if(!homePlayers.length&&!awayPlayers.length&&!moroccanNationalMatch)return null
     const moroccans=[...homePlayers.map(name=>({name,team:homeName})),...awayPlayers.map(name=>({name,team:awayName}))]
     return {
       id:f.fixture.id,
@@ -70,7 +60,6 @@ export async function GET(){
       homeGoals:f.goals.home,
       awayGoals:f.goals.away,
       moroccans,
-      moroccanClubMatch,
       moroccanNationalMatch
     }
   }).filter(Boolean)
