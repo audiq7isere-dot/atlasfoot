@@ -2,7 +2,7 @@ import Link from 'next/link'
 
 const videos=[
  {id:'KqiS1Phf_LQ',cat:'Lions de l’Atlas',title:'Débat et actualité des Lions de l’Atlas',source:'MOUNIR FOOT'},
- {id:'sSgfZ29Up8k',cat:'Football marocain',title:'Les dernières infos sur nos Lions de l’Atlas',source:'MOUNIR FOOT'}
+ {id:'itWn89uTqtU',cat:'Marocains du monde',title:'Youssef El Arabi buteur avec l’Olympiakos',source:'YouTube'}
 ]
 
 export default function Videos(){return <>
