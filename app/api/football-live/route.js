@@ -27,11 +27,12 @@ function moroccansForTeam(name){
  for(const [team,players] of Object.entries(TEAM_MOROCCANS)) if(n===norm(team)||n.includes(norm(team))||norm(team).includes(n)) return players
  return []
 }
+function samePlayer(a,b){const x=norm(a),y=norm(b);return x===y||x.includes(y)||y.includes(x)}
 
-async function getLiveFixtures(){
+async function api(path){
  const key=process.env.API_FOOTBALL_KEY
  if(!key) throw new Error('API_FOOTBALL_KEY manquante')
- const r=await fetch('https://v3.football.api-sports.io/fixtures?live=all',{headers:{'x-apisports-key':key},cache:'no-store'})
+ const r=await fetch(`https://v3.football.api-sports.io${path}`,{headers:{'x-apisports-key':key},cache:'no-store'})
  if(!r.ok) throw new Error(`API-Football ${r.status}`)
  const j=await r.json()
  if(j.errors && Object.keys(j.errors).length) throw new Error(JSON.stringify(j.errors))
@@ -40,14 +41,31 @@ async function getLiveFixtures(){
 
 export async function GET(){
  try{
-  const fixtures=await getLiveFixtures()
-  const matches=fixtures.map(f=>{
+  const fixtures=await api('/fixtures?live=all')
+  const relevant=fixtures.map(f=>{
     const home=moroccansForTeam(f.teams?.home?.name)
     const away=moroccansForTeam(f.teams?.away?.name)
-    if(!home.length&&!away.length) return null
-    const moroccans=[...home.map(name=>({name,team:f.teams.home.name})),...away.map(name=>({name,team:f.teams.away.name}))]
-    return {id:f.fixture.id,minute:f.fixture.status.elapsed,status:f.fixture.status.short,league:f.league.name,country:f.league.country,home:f.teams.home.name,away:f.teams.away.name,homeLogo:f.teams.home.logo,awayLogo:f.teams.away.logo,homeGoals:f.goals.home,awayGoals:f.goals.away,moroccans}
+    return (!home.length&&!away.length)?null:{f,home,away}
   }).filter(Boolean)
+
+  const matches=[]
+  for(const {f,home,away} of relevant){
+    let lineups=[]
+    try{lineups=await api(`/fixtures/lineups?fixture=${f.fixture.id}`)}catch{}
+    const moroccans=[]
+    for(const [teamName,names] of [[f.teams.home.name,home],[f.teams.away.name,away]]){
+      const lineup=lineups.find(l=>norm(l.team?.name)===norm(teamName))
+      const starters=(lineup?.startXI||[]).map(x=>x.player?.name).filter(Boolean)
+      const subs=(lineup?.substitutes||[]).map(x=>x.player?.name).filter(Boolean)
+      for(const name of names){
+        let starter=null
+        if(starters.some(n=>samePlayer(n,name))) starter=true
+        else if(subs.some(n=>samePlayer(n,name))) starter=false
+        moroccans.push({name,team:teamName,starter})
+      }
+    }
+    matches.push({id:f.fixture.id,minute:f.fixture.status.elapsed,status:f.fixture.status.short,league:f.league.name,country:f.league.country,home:f.teams.home.name,away:f.teams.away.name,homeLogo:f.teams.home.logo,awayLogo:f.teams.away.logo,homeGoals:f.goals.home,awayGoals:f.goals.away,moroccans})
+  }
   return NextResponse.json({ok:true,updatedAt:new Date().toISOString(),matches},{headers:{'Cache-Control':'no-store, max-age=0','CDN-Cache-Control':'no-store'}})
  }catch(e){return NextResponse.json({ok:false,error:e.message,matches:[]},{status:500,headers:{'Cache-Control':'no-store'}})}
 }
