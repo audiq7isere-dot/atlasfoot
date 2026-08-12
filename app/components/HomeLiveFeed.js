@@ -3,14 +3,14 @@ import Link from 'next/link'
 import {useEffect,useState} from 'react'
 
 export default function HomeLiveFeed(){
- const [items,setItems]=useState([]),[matches,setMatches]=useState([]),[newsLoading,setNewsLoading]=useState(true),[liveLoading,setLiveLoading]=useState(true),[liveError,setLiveError]=useState('')
- async function loadLive(){try{setLiveError('');const r=await fetch('/api/football-live?ts='+Date.now(),{cache:'no-store'});const j=await r.json();if(!r.ok||!j.ok) throw new Error(j.error||'Erreur live');setMatches(j.matches||[])}catch(e){setLiveError('Scores momentanément indisponibles')}finally{setLiveLoading(false)}}
+ const [items,setItems]=useState([]),[matches,setMatches]=useState([]),[newsLoading,setNewsLoading]=useState(true),[liveLoading,setLiveLoading]=useState(true),[liveError,setLiveError]=useState(''),[refreshSeconds,setRefreshSeconds]=useState(900)
+ async function loadLive(){try{setLiveError('');const r=await fetch('/api/football-live',{cache:'no-store'});const j=await r.json();setRefreshSeconds(j.refreshSeconds||900);if(!r.ok||!j.ok){setMatches([]);setLiveError(j.reason==='quota'?'Quota API-Football atteint pour aujourd’hui. Le Live reprendra automatiquement après réinitialisation.':'Scores momentanément indisponibles');return}setMatches(j.matches||[])}catch{setLiveError('Scores momentanément indisponibles')}finally{setLiveLoading(false)}}
  async function loadNews(){try{const r=await fetch('/api/fil-actualite?ts='+Date.now(),{cache:'no-store'});const j=await r.json();setItems((j.items||[]).slice(0,16))}catch{}finally{setNewsLoading(false)}}
- useEffect(()=>{loadLive();loadNews();const liveId=setInterval(loadLive,30000);const newsId=setInterval(loadNews,120000);return()=>{clearInterval(liveId);clearInterval(newsId)}},[])
+ useEffect(()=>{loadLive();loadNews();const liveId=setInterval(loadLive,refreshSeconds*1000);const newsId=setInterval(loadNews,120000);return()=>{clearInterval(liveId);clearInterval(newsId)}},[refreshSeconds])
  const time=d=>{const x=new Date(d);return isNaN(x)?'':x.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})}
  const status=p=>p.starter===true?'titulaire':p.starter===false?'remplaçant':'dans l’effectif'
  return <aside className="homeLiveRail">
-   <div className="homeLiveHead"><div><span className="liveDot"></span><b>DIRECT ATLASFOOT</b><small>Scores live · actualisé toutes les 30 sec</small></div><Link href="/fil-actualite">Tout voir →</Link></div>
+   <div className="homeLiveHead"><div><span className="liveDot"></span><b>DIRECT ATLASFOOT</b><small>Scores des matchs avec Marocains</small></div><Link href="/fil-actualite">Tout voir →</Link></div>
    <div className="homeLiveScores">
     {liveLoading&&<div className="homeLiveLoading">Chargement des scores en direct…</div>}
     {!liveLoading&&liveError&&<div className="homeLiveLoading">{liveError}</div>}
