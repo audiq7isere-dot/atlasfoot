@@ -6,9 +6,13 @@ import {createClient} from '@supabase/supabase-js'
 const supabase=createClient(process.env.NEXT_PUBLIC_SUPABASE_URL||'https://czwiqkbojqqdatqohnrs.supabase.co',process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY||'sb_publishable_9H0YCCeSFQ-KgWucLDQ__w_au0A3nqP')
 const squad=[
 {name:'Yassine Bounou',role:'GK'},{name:'Munir Mohamedi',role:'GK'},{name:'El Mehdi Benabid',role:'GK'},
+{name:'Yanis Benchaouch',role:'GK'},{name:'Ibrahim Gomis',role:'GK'},{name:'Abdelhakim Mesbahi',role:'GK'},
 {name:'Achraf Hakimi',role:'RB'},{name:'Noussair Mazraoui',role:'LB'},{name:'Nayef Aguerd',role:'CB'},{name:'Chadi Riad',role:'CB'},{name:'Issa Diop',role:'CB'},{name:'Romain Saïss',role:'CB'},{name:'Adam Masina',role:'CB'},{name:'Yahya Attiat-Allah',role:'LB'},
+{name:'Mohammed Kebdani',role:'RB'},{name:'Ismael Baouf',role:'CB'},{name:'Hamza Koutoune',role:'CB'},{name:'Ali Maamar',role:'RB'},{name:'Mohamed Taha Majni',role:'CB'},{name:'Smail Bakhty',role:'CB'},{name:'Fouad Zahouani',role:'LB'},
 {name:'Sofyan Amrabat',role:'DM'},{name:'Azzedine Ounahi',role:'CM'},{name:'Bilal El Khannouss',role:'CM'},{name:'Ismael Saibari',role:'CM'},{name:'Neil El Aynaoui',role:'CM'},{name:'Eliesse Ben Seghir',role:'AM'},{name:'Oussama Targhalline',role:'DM'},
-{name:'Brahim Díaz',role:'RW'},{name:'Abde Ezzalzouli',role:'LW'},{name:'Soufiane Rahimi',role:'FW'},{name:'Ayoub El Kaabi',role:'ST'},{name:'Youssef En-Nesyri',role:'ST'},{name:'Ilias Akhomach',role:'RW'},{name:'Chemsdine Talbi',role:'RW'}]
+{name:'Naim Byar',role:'DM'},{name:'Saad El Haddad',role:'AM'},{name:'Houssam Essadak',role:'CM'},{name:'Yassine Khalifi',role:'CM'},{name:'Anas Tajaouart',role:'CM'},
+{name:'Brahim Díaz',role:'RW'},{name:'Abde Ezzalzouli',role:'LW'},{name:'Soufiane Rahimi',role:'FW'},{name:'Ayoub El Kaabi',role:'ST'},{name:'Youssef En-Nesyri',role:'ST'},{name:'Ilias Akhomach',role:'RW'},{name:'Chemsdine Talbi',role:'RW'},
+{name:'Ilias Boumassaoudi',role:'LW'},{name:'Younes El Bahraoui',role:'ST'},{name:'Mohamed Hamony',role:'LW'},{name:'Othmane Maamma',role:'RW'},{name:'Gessime Yassine',role:'RW'},{name:'Mohamed Yassir Zabiri',role:'ST'}]
 const formations={
 '4-3-3':[{r:'GK',x:50,y:88},{r:'LB',x:16,y:70},{r:'CB',x:38,y:70},{r:'CB',x:62,y:70},{r:'RB',x:84,y:70},{r:'CM',x:28,y:47},{r:'DM',x:50,y:54},{r:'CM',x:72,y:47},{r:'LW',x:20,y:22},{r:'ST',x:50,y:16},{r:'RW',x:80,y:22}],
 '4-2-3-1':[{r:'GK',x:50,y:88},{r:'LB',x:16,y:70},{r:'CB',x:38,y:70},{r:'CB',x:62,y:70},{r:'RB',x:84,y:70},{r:'DM',x:38,y:52},{r:'DM',x:62,y:52},{r:'LW',x:20,y:31},{r:'AM',x:50,y:32},{r:'RW',x:80,y:31},{r:'ST',x:50,y:14}],
@@ -20,13 +24,10 @@ export default function MonXI(){
  const say=t=>{setToast(t);setTimeout(()=>setToast(''),4500)}
  useEffect(()=>{supabase.auth.getUser().then(({data})=>setUser(data.user||null));supabase.auth.onAuthStateChange((_e,s)=>setUser(s?.user||null));load()},[])
  async function load(){const {data}=await supabase.from('lineup_votes').select('formation,players');setVotes(data||[])}
- function choose(i,name){
-   if(name&&selected.some((player,index)=>index!==i&&player===name))return say('Ce joueur est déjà sélectionné à un autre poste.')
-   const next=[...selected];next[i]=name;setSelected(next)
- }
+ function choose(i,name){if(name&&selected.some((player,index)=>index!==i&&player===name))return say('Ce joueur est déjà sélectionné à un autre poste.');const next=[...selected];next[i]=name;setSelected(next)}
  async function save(){if(!user)return say('Connecte-toi dans le Café des Lions pour enregistrer ton XI.');if(selected.some(x=>!x))return say('Sélectionne les 11 joueurs avant d’enregistrer.');if(new Set(selected).size!==11)return say('Un joueur ne peut apparaître qu’une seule fois.');const {error}=await supabase.from('lineup_votes').upsert({voter_id:user.id,formation,players:selected,updated_at:new Date().toISOString()},{onConflict:'voter_id'});if(error)return say('Vote impossible : '+error.message);say('✅ Ton XI a été enregistré.');load()}
  const counts=useMemo(()=>{const c={};votes.forEach(v=>(v.players||[]).forEach(n=>c[n]=(c[n]||0)+1));return c},[votes])
- const community=useMemo(()=>{const used=new Set();return formations[formation].map((slot,i)=>{const candidates=squad.filter(p=>eligible(slot.r,p)&&!used.has(p.name)).sort((a,b)=>{const d=(counts[b.name]||0)-(counts[a.name]||0);if(d)return d;const ai=fallback.indexOf(a.name),bi=fallback.indexOf(b.name);return (ai<0?99:ai)-(bi<0?99:bi)});const pick=candidates[0]?.name||'À déterminer';used.add(pick);return pick})},[formation,counts])
+ const community=useMemo(()=>{const used=new Set();return formations[formation].map(slot=>{const candidates=squad.filter(p=>eligible(slot.r,p)&&!used.has(p.name)).sort((a,b)=>{const d=(counts[b.name]||0)-(counts[a.name]||0);if(d)return d;const ai=fallback.indexOf(a.name),bi=fallback.indexOf(b.name);return (ai<0?99:ai)-(bi<0?99:bi)});const pick=candidates[0]?.name||'À déterminer';used.add(pick);return pick})},[formation,counts])
  const pct=n=>votes.length?Math.round((counts[n]||0)*100/votes.length):0
  return <><header className="top"><div className="wrap nav"><Link className="brand" href="/">ATLAS<b>FOOT</b></Link><nav className="navlinks"><Link href="/">Actualités</Link><Link className="active" href="/mon-xi">Mon XI</Link><Link href="/cafe">☕ Café des Lions</Link></nav></div></header>
 <section className="hero xiHero"><div className="wrap"><span className="eyebrow">🇲🇦 LE CHOIX DES SUPPORTERS</span><h1>COMPOSE <em>TON XI DU MAROC</em></h1><p>Choisis les joueurs à leur vrai poste. Chaque bulletin alimente automatiquement le XI préféré de la communauté.</p></div></section>
