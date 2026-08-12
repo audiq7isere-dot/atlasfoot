@@ -1,9 +1,9 @@
 'use client'
 import Link from 'next/link'
-import {useMemo} from 'react'
+import {useSearchParams} from 'next/navigation'
 
 export default function Actualite(){
- const params=useMemo(()=>typeof window==='undefined'?new URLSearchParams():new URLSearchParams(window.location.search),[])
+ const params=useSearchParams()
  const title=params.get('title')||'Actualité AtlasFoot'
  const source=params.get('source')||'Source externe'
  const category=params.get('category')||'Actualité'
