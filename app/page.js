@@ -7,7 +7,7 @@ const players=[
 ]
 const videos=[
  {id:'KqiS1Phf_LQ',cat:'LIONS DE L’ATLAS',title:'Débat et actualité des Lions de l’Atlas'},
- {id:'sSgfZ29Up8k',cat:'FOOTBALL MAROCAIN',title:'Les dernières infos sur nos Lions de l’Atlas'}
+ {id:'itWn89uTqtU',cat:'MAROCAINS DU MONDE',title:'Youssef El Arabi buteur avec l’Olympiakos'}
 ]
 export default function Home(){return <>
 <header className="top"><div className="wrap nav"><Link className="brand" href="/">ATLAS<b>FOOT</b></Link><nav className="navlinks"><a href="#actus">Actualités</a><Link href="/fil-actualite">⚡ Fil d’actualité</Link><Link href="/videos">🎥 Vidéos</Link><Link href="/mon-xi">Mon XI</Link><Link href="/cafe">☕ Café des Lions</Link></nav><Link className="btn red" href="/cafe">Rejoindre la communauté</Link></div></header>
