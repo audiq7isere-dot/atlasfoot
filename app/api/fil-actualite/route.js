@@ -11,6 +11,7 @@ const feeds=[
 
 const decode=s=>(s||'').replace(/<!\[CDATA\[|\]\]>/g,'').replace(/&amp;/g,'&').replace(/&#39;/g,"'").replace(/&quot;/g,'"').replace(/&lt;/g,'<').replace(/&gt;/g,'>').trim()
 const tag=(block,name)=>decode((block.match(new RegExp(`<${name}[^>]*>([\\s\\S]*?)<\\/${name}>`,'i'))||[])[1]||'')
+const stripHtml=s=>decode((s||'').replace(/<[^>]+>/g,' ').replace(/\s+/g,' ')).trim()
 
 function parse(xml,category){
  const items=xml.match(/<item>[\s\S]*?<\/item>/gi)||[]
@@ -19,7 +20,8 @@ function parse(xml,category){
    const parts=full.split(' - ')
    const source=parts.length>1?parts.pop():'Google Actualités'
    const title=parts.join(' - ')||full
-   return {title,source,category,link:tag(item,'link'),publishedAt:tag(item,'pubDate')}
+   const description=stripHtml(tag(item,'description')).replace(title,'').trim()
+   return {title,source,category,link:tag(item,'link'),publishedAt:tag(item,'pubDate'),summary:description}
  }).filter(x=>x.title&&x.link)
 }
 
