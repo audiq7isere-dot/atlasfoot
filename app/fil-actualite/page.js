@@ -6,8 +6,8 @@ import './feed.css'
 const cats=['Tout','Lions de l’Atlas','Botola Pro','Marocains du monde','Mercato','Jeunes talents']
 export default function FilActualite(){
  const [items,setItems]=useState([]),[cat,setCat]=useState('Tout'),[updated,setUpdated]=useState(null),[loading,setLoading]=useState(true)
- async function load(){try{const r=await fetch('/api/fil-actualite',{cache:'no-store'});const j=await r.json();setItems(j.items||[]);setUpdated(j.updatedAt||null)}finally{setLoading(false)}}
- useEffect(()=>{const requested=new URLSearchParams(window.location.search).get('cat');if(requested&&cats.includes(requested))setCat(requested);load();const id=setInterval(load,300000);return()=>clearInterval(id)},[])
+ async function load(){try{const r=await fetch('/api/fil-actualite?ts='+Date.now(),{cache:'no-store'});const j=await r.json();setItems(j.items||[]);setUpdated(j.updatedAt||null)}finally{setLoading(false)}}
+ useEffect(()=>{const requested=new URLSearchParams(window.location.search).get('cat');if(requested&&cats.includes(requested))setCat(requested);load();const id=setInterval(load,120000);return()=>clearInterval(id)},[])
  const visible=useMemo(()=>cat==='Tout'?items:items.filter(x=>x.category===cat),[items,cat])
  const time=d=>{const x=new Date(d);return isNaN(x)?'':x.toLocaleString('fr-FR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})}
  return <><header className="top"><div className="wrap nav"><Link className="brand" href="/">ATLAS<b>FOOT</b></Link><nav className="navlinks"><Link href="/">Actualités</Link><Link className="active" href="/fil-actualite">⚡ Fil d’actualité</Link><Link href="/mon-xi">Mon XI</Link><Link href="/cafe">☕ Café des Lions</Link></nav></div></header>
