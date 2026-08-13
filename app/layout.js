@@ -1,26 +1,28 @@
 import './globals.css'
 
+const siteUrl = 'https://www.atlasfoot.fr'
+
 export const metadata = {
-  metadataBase: new URL('https://atlasfoot.vercel.app'),
+  metadataBase: new URL(siteUrl),
   title: {
-    default: 'AtlasFoot — Actualité du football marocain, Lions de l’Atlas et Botola',
+    default: 'AtlasFoot — Actualité du football marocain et Lions de l’Atlas',
     template: '%s | AtlasFoot'
   },
-  description: "Toute l’actualité du football marocain : Lions de l’Atlas, Botola Pro, joueurs marocains à l’étranger, mercato, vidéos, interviews et communauté des supporters.",
-  keywords: ['football marocain','Maroc football','Lions de l Atlas','équipe du Maroc','Botola Pro','joueurs marocains','Marocains du monde','mercato Maroc','actualité Maroc football','AtlasFoot'],
+  description: "Toute l’actualité du football marocain : Lions de l’Atlas, équipe du Maroc, joueurs marocains à l’étranger, mercato, matchs, vidéos et communauté des supporters.",
+  keywords: ['football marocain','actualité football marocain','Maroc football','Lions de l Atlas','équipe du Maroc','joueurs marocains','Marocains du monde','mercato Maroc','match Maroc','AtlasFoot'],
   alternates: { canonical: '/' },
   openGraph: {
     type: 'website',
     locale: 'fr_FR',
-    url: 'https://atlasfoot.vercel.app',
+    url: siteUrl,
     siteName: 'AtlasFoot',
     title: 'AtlasFoot — Toute l’actualité du football marocain',
-    description: "Lions de l’Atlas, Botola, Marocains du monde, mercato, vidéos et communauté."
+    description: "Lions de l’Atlas, équipe du Maroc, joueurs marocains à l’étranger, mercato, matchs, vidéos et communauté."
   },
   twitter: {
     card: 'summary_large_image',
     title: 'AtlasFoot — Actualité du football marocain',
-    description: "Lions de l’Atlas, Botola, Marocains du monde, mercato et vidéos."
+    description: "Lions de l’Atlas, équipe du Maroc, Marocains du monde, mercato, matchs et vidéos."
   },
   robots: {
     index: true,
@@ -33,10 +35,15 @@ const structuredData = {
   '@context': 'https://schema.org',
   '@type': 'WebSite',
   name: 'AtlasFoot',
-  url: 'https://atlasfoot.vercel.app',
+  alternateName: 'Atlas Foot',
+  url: siteUrl,
   inLanguage: 'fr-FR',
-  description: "Actualité du football marocain, Lions de l’Atlas, Botola et joueurs marocains.",
-  publisher: { '@type': 'Organization', name: 'AtlasFoot', url: 'https://atlasfoot.vercel.app' }
+  description: "Site d’actualité consacré au football marocain, aux Lions de l’Atlas et aux joueurs marocains à l’étranger.",
+  publisher: {
+    '@type': 'Organization',
+    name: 'AtlasFoot',
+    url: siteUrl
+  }
 }
 
 export default function RootLayout({ children }) {
