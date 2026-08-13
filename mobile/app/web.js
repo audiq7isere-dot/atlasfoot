@@ -1,0 +1,7 @@
+import React from 'react';
+import {SafeAreaView,View,Text,Pressable,StyleSheet} from 'react-native';
+import {WebView} from 'react-native-webview';
+import {useLocalSearchParams,useRouter} from 'expo-router';
+import {StatusBar} from 'expo-status-bar';
+export default function Web(){const {path='/'}=useLocalSearchParams(),r=useRouter();const uri='https://www.atlasfoot.fr'+String(path);return <SafeAreaView style={s.safe}><StatusBar style="light"/><View style={s.bar}><Pressable onPress={()=>r.back()}><Text style={s.back}>‹</Text></Pressable><Text style={s.brand}>ATLAS<Text style={s.red}>FOOT</Text></Text><Pressable onPress={()=>r.replace('/')}><Text style={s.home}>⌂</Text></Pressable></View><WebView source={{uri}} style={{flex:1,backgroundColor:'#07140f'}} startInLoadingState allowsBackForwardNavigationGestures sharedCookiesEnabled/></SafeAreaView>}
+const s=StyleSheet.create({safe:{flex:1,backgroundColor:'#07140f'},bar:{height:58,flexDirection:'row',alignItems:'center',justifyContent:'space-between',paddingHorizontal:18,borderBottomWidth:1,borderBottomColor:'#193025'},back:{fontSize:38,color:'#fff',lineHeight:40},brand:{fontSize:20,fontWeight:'900',color:'#fff'},red:{color:'#e32929'},home:{fontSize:24,color:'#fff'}});
