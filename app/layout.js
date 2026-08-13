@@ -1,4 +1,5 @@
 import './globals.css'
+import PWARegister from './components/PWARegister'
 
 const siteUrl = 'https://www.atlasfoot.fr'
 
@@ -12,6 +13,9 @@ export const metadata = {
   keywords: ['football marocain','actualité football marocain','Maroc football','Lions de l Atlas','équipe nationale Maroc','joueurs marocains','Marocains du monde','mercato Maroc','match Maroc','résultats Maroc','AtlasFoot'],
   applicationName: 'AtlasFoot',
   category: 'sports',
+  manifest: '/manifest.webmanifest',
+  appleWebApp: {capable:true,title:'AtlasFoot',statusBarStyle:'black-translucent'},
+  formatDetection:{telephone:false},
   alternates: { canonical: '/' },
   openGraph: {
     type: 'website',
@@ -32,6 +36,8 @@ export const metadata = {
     googleBot: { index: true, follow: true, 'max-image-preview': 'large', 'max-snippet': -1, 'max-video-preview': -1 }
   }
 }
+
+export const viewport={themeColor:'#07140f',colorScheme:'dark'}
 
 const structuredData = [
   {
@@ -59,5 +65,5 @@ const structuredData = [
 ]
 
 export default function RootLayout({ children }) {
-  return <html lang="fr"><body><script type="application/ld+json" dangerouslySetInnerHTML={{__html:JSON.stringify(structuredData)}} />{children}</body></html>
+  return <html lang="fr"><body><PWARegister/><script type="application/ld+json" dangerouslySetInnerHTML={{__html:JSON.stringify(structuredData)}} />{children}</body></html>
 }
