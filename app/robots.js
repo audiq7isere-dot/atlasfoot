@@ -1,7 +1,9 @@
+const siteUrl = 'https://www.atlasfoot.fr'
+
 export default function robots(){
  return {
-  rules:{userAgent:'*',allow:'/',disallow:['/api/']},
-  sitemap:'https://atlasfoot.vercel.app/sitemap.xml',
-  host:'https://atlasfoot.vercel.app'
+  rules:{userAgent:'*',allow:'/',disallow:['/api/','/admin/']},
+  sitemap:siteUrl+'/sitemap.xml',
+  host:siteUrl
  }
 }
