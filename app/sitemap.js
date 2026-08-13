@@ -1,12 +1,14 @@
-export default function sitemap(){
- const base='https://www.atlasfoot.fr'
- const now=new Date()
- return [
-  {url:base,lastModified:now,changeFrequency:'hourly',priority:1},
-  {url:base+'/fil-actualite',lastModified:now,changeFrequency:'hourly',priority:.95},
-  {url:base+'/actualite',lastModified:now,changeFrequency:'hourly',priority:.95},
-  {url:base+'/videos',lastModified:now,changeFrequency:'daily',priority:.85},
-  {url:base+'/mon-xi',lastModified:now,changeFrequency:'daily',priority:.7},
-  {url:base+'/cafe',lastModified:now,changeFrequency:'hourly',priority:.75}
- ]
+const base = 'https://www.atlasfoot.fr'
+
+export const dynamic = 'force-static'
+
+export default function sitemap() {
+  return [
+    { url: `${base}/`, changeFrequency: 'hourly', priority: 1.0 },
+    { url: `${base}/actualite`, changeFrequency: 'hourly', priority: 0.95 },
+    { url: `${base}/fil-actualite`, changeFrequency: 'hourly', priority: 0.95 },
+    { url: `${base}/videos`, changeFrequency: 'daily', priority: 0.85 },
+    { url: `${base}/mon-xi`, changeFrequency: 'daily', priority: 0.7 },
+    { url: `${base}/cafe`, changeFrequency: 'hourly', priority: 0.75 },
+  ]
 }
