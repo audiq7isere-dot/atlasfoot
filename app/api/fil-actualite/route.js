@@ -1,5 +1,9 @@
+import {createClient} from '@supabase/supabase-js'
+
 export const dynamic='force-dynamic'
 export const revalidate=0
+
+const supabase=createClient(process.env.NEXT_PUBLIC_SUPABASE_URL||'https://czwiqkbojqqdatqohnrs.supabase.co',process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY||'sb_publishable_9H0YCCeSFQ-KgWucLDQ__w_au0A3nqP')
 
 const feeds=[
  {category:'Lions de l’Atlas',q:'Maroc football équipe nationale OR "Lions de l Atlas"'},
@@ -17,6 +21,7 @@ const decode=s=>(s||'')
  .replace(/\s+/g,' ').trim()
 const tag=(block,name)=>decode((block.match(new RegExp(`<${name}[^>]*>([\\s\\S]*?)<\\/${name}>`,'i'))||[])[1]||'')
 const stripHtml=s=>decode((s||'').replace(/<[^>]+>/g,' '))
+const slugify=s=>(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,110)
 
 function parse(xml,category){
  const items=xml.match(/<item>[\s\S]*?<\/item>/gi)||[]
@@ -27,7 +32,9 @@ function parse(xml,category){
    const title=parts.join(' - ')||full
    let description=stripHtml(tag(item,'description')).replace(title,'').trim()
    if(description===source||description.length<35)description=''
-   return {title,source,category,link:tag(item,'link'),publishedAt:tag(item,'pubDate'),summary:description}
+   const publishedAt=tag(item,'pubDate')
+   const stamp=publishedAt?new Date(publishedAt).toISOString().slice(0,10):new Date().toISOString().slice(0,10)
+   return {title,source,category,link:tag(item,'link'),publishedAt,summary:description,slug:`${slugify(title)}-${stamp}`}
  }).filter(x=>x.title&&x.link)
 }
 
@@ -47,6 +54,11 @@ export async function GET(){
    const seen=new Set()
    const items=byCategory.filter(x=>{const k=x.title.toLowerCase().replace(/\W/g,'');if(seen.has(k))return false;seen.add(k);return true})
      .sort((a,b)=>new Date(b.publishedAt)-new Date(a.publishedAt)).slice(0,100)
+
+   if(items.length){
+     const rows=items.map(x=>({slug:x.slug,title:x.title,source:x.source,category:x.category,original_url:x.link,published_at:x.publishedAt||null,summary:x.summary||null,updated_at:new Date().toISOString()}))
+     await supabase.from('news_articles').upsert(rows,{onConflict:'slug'}).select('slug')
+   }
 
    return Response.json({updatedAt:new Date().toISOString(),items},{headers:{'Cache-Control':'no-store, no-cache, must-revalidate, max-age=0'}})
  }catch(e){
