@@ -1,0 +1,1 @@
+{"expo":{"name":"AtlasFoot","slug":"atlasfoot","version":"1.0.0","orientation":"portrait","scheme":"atlasfoot","userInterfaceStyle":"dark","ios":{"supportsTablet":true,"bundleIdentifier":"fr.atlasfoot.app"},"android":{"package":"fr.atlasfoot.app","adaptiveIcon":{"backgroundColor":"#07140f"}},"plugins":["expo-router"],"experiments":{"typedRoutes":false}}}
