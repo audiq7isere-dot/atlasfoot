@@ -8,6 +8,7 @@ export const revalidate=3600
 export default async function sitemap(){
  const staticPages=[
   {url:`${base}/`,changeFrequency:'hourly',priority:1.0},
+  {url:`${base}/actualite`,changeFrequency:'hourly',priority:0.9},
   {url:`${base}/fil-actualite`,changeFrequency:'hourly',priority:0.95},
   {url:`${base}/videos`,changeFrequency:'daily',priority:0.85},
   {url:`${base}/mon-xi`,changeFrequency:'daily',priority:0.7},
