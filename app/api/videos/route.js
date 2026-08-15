@@ -1,43 +1,97 @@
 const CHANNELS=[
   {name:'FRMF',id:'UCbQlejA3nCVMq-9qw-oZEtQ'}
 ]
+const FRMF_VIDEOS='https://frmf.ma/fr/categorie/videos'
 
-const decode=s=>(s||'').replace(/<!\[CDATA\[|\]\]>/g,'').replace(/&amp;/g,'&').replace(/&#39;/g,"'").replace(/&quot;/g,'"').replace(/&lt;/g,'<').replace(/&gt;/g,'>').trim()
+const decode=s=>(s||'').replace(/<!\[CDATA\[|\]\]>/g,'').replace(/&amp;/g,'&').replace(/&#39;|&#039;/g,"'").replace(/&quot;/g,'"').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/\s+/g,' ').trim()
 const tag=(block,name)=>decode((block.match(new RegExp(`<${name}[^>]*>([\\s\\S]*?)<\\/${name}>`,'i'))||[])[1]||'')
-const attr=(block,name,attrName)=>((block.match(new RegExp(`<${name}[^>]*${attrName}="([^"]+)"[^>]*>`,'i'))||[])[1]||'')
+const attr=(block,name,attrName)=>((block.match(new RegExp(`<${name}[^>]*${attrName}=["']([^"']+)["'][^>]*>`,'i'))||[])[1]||'')
+const strip=s=>decode((s||'').replace(/<[^>]+>/g,' '))
 
-function parse(xml,channel){
+function validVideoId(id){return /^[A-Za-z0-9_-]{11}$/.test(id||'')}
+function youtubeId(url=''){
+  const m=String(url).match(/(?:youtube\.com\/(?:watch\?[^#]*v=|embed\/|shorts\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/i)
+  return m?.[1]||''
+}
+function normalizeVideo({id,title,publishedAt,channel='FRMF',thumbnail}){
+  if(!validVideoId(id)||!title||!publishedAt)return null
+  return {id,title:decode(title),channel:decode(channel)||'FRMF',publishedAt:new Date(publishedAt).toISOString(),thumbnail:thumbnail||`https://i.ytimg.com/vi/${id}/hqdefault.jpg`,url:`https://www.youtube.com/watch?v=${id}`}
+}
+
+function parseYouTubeFeed(xml,channel){
   const entries=xml.match(/<entry>[\s\S]*?<\/entry>/gi)||[]
-  return entries.map(entry=>{
-    const videoId=tag(entry,'yt:videoId')
-    const title=tag(entry,'title')
-    const publishedAt=tag(entry,'published')
-    const author=tag(entry,'name')||channel.name
-    const thumb=attr(entry,'media:thumbnail','url')||`https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`
-    return {
-      id:videoId,
-      title,
-      channel:author,
-      publishedAt,
-      thumbnail:thumb,
-      url:`https://www.youtube.com/watch?v=${videoId}`
-    }
-  }).filter(v=>v.id&&v.title&&v.publishedAt)
+  return entries.map(entry=>normalizeVideo({
+    id:tag(entry,'yt:videoId'),
+    title:tag(entry,'title'),
+    publishedAt:tag(entry,'published'),
+    channel:tag(entry,'name')||channel.name,
+    thumbnail:attr(entry,'media:thumbnail','url')
+  })).filter(Boolean)
+}
+
+function articleLinks(html){
+  const out=[]
+  for(const m of html.matchAll(/href=["'](https?:\/\/frmf\.ma\/fr\/articles\/[^"'#?]+|\/fr\/articles\/[^"'#?]+)["']/gi)){
+    const u=m[1].startsWith('http')?m[1]:'https://frmf.ma'+m[1]
+    if(!out.includes(u))out.push(u)
+  }
+  return out.slice(0,24)
+}
+
+function pageDate(html){
+  const iso=(html.match(/(?:datePublished|article:published_time)[^>]*content=["']([^"']+)["']/i)||[])[1]
+  if(iso&&!isNaN(new Date(iso)))return new Date(iso).toISOString()
+  const fr=(strip(html).match(/\b(\d{1,2})\s+(janvier|février|mars|avril|mai|juin|juillet|août|septembre|octobre|novembre|décembre)\s+(20\d{2})\b/i)||[])
+  if(fr.length){const months={janvier:0,'février':1,mars:2,avril:3,mai:4,juin:5,juillet:6,'août':7,septembre:8,octobre:9,novembre:10,'décembre':11};return new Date(Date.UTC(+fr[3],months[fr[2].toLowerCase()],+fr[1],12)).toISOString()}
+  return ''
+}
+function pageTitle(html){
+  return decode((html.match(/<h1[^>]*>([\s\S]*?)<\/h1>/i)||[])[1]?.replace(/<[^>]+>/g,' ')||(html.match(/<meta[^>]+property=["']og:title["'][^>]+content=["']([^"']+)["']/i)||[])[1]||'')
+}
+function pageYouTubeId(html){
+  const urls=[]
+  for(const m of html.matchAll(/(?:src|href)=["']([^"']+(?:youtube\.com|youtu\.be)[^"']*)["']/gi))urls.push(m[1])
+  for(const u of urls){const id=youtubeId(decode(u));if(validVideoId(id))return id}
+  const raw=html.match(/(?:youtube\.com\/(?:watch\?[^"'<>\s]*v=|embed\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/i)
+  return raw?.[1]||''
+}
+
+async function fetchText(url){
+  const r=await fetch(url,{redirect:'follow',headers:{'user-agent':'Mozilla/5.0 (compatible; AtlasFoot/1.0; +https://www.atlasfoot.fr)','accept':'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8','accept-language':'fr-FR,fr;q=0.9,en;q=0.7'},cache:'no-store'})
+  if(!r.ok)throw new Error(`${url} ${r.status}`)
+  return r.text()
+}
+
+async function fromYouTubeRSS(){
+  const results=await Promise.all(CHANNELS.map(async ch=>{
+    const xml=await fetchText(`https://www.youtube.com/feeds/videos.xml?channel_id=${ch.id}`)
+    return parseYouTubeFeed(xml,ch)
+  }))
+  return results.flat()
+}
+
+async function fromOfficialFRMF(){
+  const index=await fetchText(FRMF_VIDEOS)
+  const links=articleLinks(index)
+  const rows=await Promise.allSettled(links.map(async url=>{
+    const html=await fetchText(url)
+    const id=pageYouTubeId(html)
+    const title=pageTitle(html)
+    const publishedAt=pageDate(html)
+    return normalizeVideo({id,title,publishedAt,channel:'FRMF'})
+  }))
+  return rows.flatMap(r=>r.status==='fulfilled'&&r.value?[r.value]:[])
 }
 
 export async function GET(){
-  try{
-    const results=await Promise.all(CHANNELS.map(async ch=>{
-      const r=await fetch(`https://www.youtube.com/feeds/videos.xml?channel_id=${ch.id}`,{
-        headers:{'user-agent':'AtlasFoot/1.0'},
-        next:{revalidate:1800}
-      })
-      if(!r.ok) throw new Error(`YouTube RSS ${r.status}`)
-      return parse(await r.text(),ch)
-    }))
-    const items=results.flat().sort((a,b)=>new Date(b.publishedAt)-new Date(a.publishedAt)).slice(0,20)
-    return Response.json({updatedAt:new Date().toISOString(),items},{headers:{'Cache-Control':'public, s-maxage=1800, stale-while-revalidate=3600'}})
-  }catch(e){
-    return Response.json({updatedAt:new Date().toISOString(),items:[],error:'Flux vidéo temporairement indisponible'},{status:200})
-  }
+  let items=[]
+  const errors=[]
+  try{items=await fromYouTubeRSS()}catch(e){errors.push('youtube-rss')}
+  if(!items.length){try{items=await fromOfficialFRMF()}catch(e){errors.push('frmf-videotheque')}}
+
+  const seen=new Set()
+  items=items.filter(v=>v&&validVideoId(v.id)&&/^https:\/\/www\.youtube\.com\/watch\?v=[A-Za-z0-9_-]{11}$/.test(v.url)&&!seen.has(v.id)&&(seen.add(v.id),true))
+    .sort((a,b)=>new Date(b.publishedAt)-new Date(a.publishedAt)).slice(0,20)
+
+  return Response.json({updatedAt:new Date().toISOString(),items,...(!items.length?{error:'Flux vidéo temporairement indisponible',sourcesTried:errors}: {})},{headers:{'Cache-Control':'public, s-maxage=900, stale-while-revalidate=1800'}})
 }
