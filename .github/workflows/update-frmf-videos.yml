@@ -1,0 +1,66 @@
+name: Update FRMF videos
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 */3 * * *'
+  push:
+    paths:
+      - '.github/workflows/update-frmf-videos.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch official FRMF YouTube feed
+        run: |
+          python - <<'PY'
+          import json, urllib.request, xml.etree.ElementTree as ET
+          from datetime import datetime, timezone
+          from pathlib import Path
+
+          channel_id = 'UCbQlejA3nCVMq-9qw-oZEtQ'
+          url = f'https://www.youtube.com/feeds/videos.xml?channel_id={channel_id}'
+          req = urllib.request.Request(url, headers={'User-Agent':'Mozilla/5.0 (compatible; AtlasFoot/1.0; +https://www.atlasfoot.fr)'})
+          with urllib.request.urlopen(req, timeout=30) as r:
+              xml = r.read()
+          root = ET.fromstring(xml)
+          ns = {
+              'atom':'http://www.w3.org/2005/Atom',
+              'yt':'http://www.youtube.com/xml/schemas/2015',
+              'media':'http://search.yahoo.com/mrss/'
+          }
+          items=[]
+          for entry in root.findall('atom:entry', ns):
+              vid=(entry.findtext('yt:videoId', default='', namespaces=ns) or '').strip()
+              title=(entry.findtext('atom:title', default='', namespaces=ns) or '').strip()
+              published=(entry.findtext('atom:published', default='', namespaces=ns) or '').strip()
+              author=entry.find('atom:author', ns)
+              channel=(author.findtext('atom:name', default='FRMF', namespaces=ns) if author is not None else 'FRMF').strip()
+              thumb=entry.find('media:group/media:thumbnail', ns)
+              thumbnail=(thumb.attrib.get('url') if thumb is not None else '') or f'https://i.ytimg.com/vi/{vid}/hqdefault.jpg'
+              if len(vid)==11 and title and published:
+                  items.append({'id':vid,'title':title,'channel':channel or 'FRMF','publishedAt':published,'thumbnail':thumbnail,'url':f'https://www.youtube.com/watch?v={vid}'})
+          items.sort(key=lambda x:x['publishedAt'], reverse=True)
+          data={'updatedAt':datetime.now(timezone.utc).isoformat().replace('+00:00','Z'),'items':items[:20]}
+          path=Path('data/frmf-videos.json')
+          path.parent.mkdir(parents=True, exist_ok=True)
+          path.write_text(json.dumps(data,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+          if not data['items']:
+              raise SystemExit('Official FRMF YouTube feed returned no videos')
+          PY
+      - name: Commit refreshed cache
+        run: |
+          if git diff --quiet -- data/frmf-videos.json; then
+            echo 'No video cache changes'
+            exit 0
+          fi
+          git config user.name 'atlasfoot-bot'
+          git config user.email 'actions@users.noreply.github.com'
+          git add data/frmf-videos.json
+          git commit -m 'Refresh official FRMF video cache'
+          git push
