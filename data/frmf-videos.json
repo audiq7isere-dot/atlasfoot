@@ -1,6 +1,14 @@
 {
-  "updatedAt": "2026-08-15T15:53:05.489838Z",
+  "updatedAt": "2026-08-15T19:10:43.148214Z",
   "items": [
+    {
+      "id": "MLl0o2yBQ8g",
+      "title": "تصريح السيد هشام الدكيك عقب المباراة الودية أمام البوسنة والهرسك",
+      "channel": "Fédération Royale Marocaine de Football",
+      "publishedAt": "2026-08-15T17:56:02+00:00",
+      "thumbnail": "https://i2.ytimg.com/vi/MLl0o2yBQ8g/hqdefault.jpg",
+      "url": "https://www.youtube.com/watch?v=MLl0o2yBQ8g"
+    },
     {
       "id": "E_x52VVdUa4",
       "title": "آخر حصة تدريبية للمنتخب الوطني النسوي قبل مواجهة الجزائر",
@@ -112,14 +120,6 @@
       "publishedAt": "2026-08-02T21:39:31+00:00",
       "thumbnail": "https://i1.ytimg.com/vi/djs7hUNvLcY/hqdefault.jpg",
       "url": "https://www.youtube.com/watch?v=djs7hUNvLcY"
-    },
-    {
-      "id": "ARItRypgvvk",
-      "title": "الندوة الصحافية للمنتخب الوطني النسوي قبل مواجهة السنغال",
-      "channel": "Fédération Royale Marocaine de Football",
-      "publishedAt": "2026-08-02T14:34:04+00:00",
-      "thumbnail": "https://i2.ytimg.com/vi/ARItRypgvvk/hqdefault.jpg",
-      "url": "https://www.youtube.com/watch?v=ARItRypgvvk"
     }
   ]
 }
