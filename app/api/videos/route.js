@@ -14,7 +14,7 @@ function youtubeId(url=''){
   return m?.[1]||''
 }
 function normalizeVideo({id,title,publishedAt,channel='FRMF',thumbnail}){
-  if(!validVideoId(id)||!title||!publishedAt)return null
+  if(!validVideoId(id)||!title||!publishedAt||isNaN(new Date(publishedAt)))return null
   return {id,title:decode(title),channel:decode(channel)||'FRMF',publishedAt:new Date(publishedAt).toISOString(),thumbnail:thumbnail||`https://i.ytimg.com/vi/${id}/hqdefault.jpg`,url:`https://www.youtube.com/watch?v=${id}`}
 }
 
@@ -70,6 +70,22 @@ async function fromYouTubeRSS(){
   return results.flat()
 }
 
+async function fromRSS2JSON(){
+  const rows=await Promise.all(CHANNELS.map(async ch=>{
+    const feed=`https://www.youtube.com/feeds/videos.xml?channel_id=${ch.id}`
+    const r=await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(feed)}`,{headers:{'user-agent':'AtlasFoot/1.0','accept':'application/json'},cache:'no-store'})
+    if(!r.ok)throw new Error(`rss2json ${r.status}`)
+    const data=await r.json()
+    if(data.status!=='ok'||!Array.isArray(data.items))throw new Error('rss2json invalid payload')
+    return data.items.map(item=>{
+      const id=youtubeId(item.link)||String(item.guid||'').replace(/^yt:video:/,'')
+      const thumb=item.thumbnail||item.enclosure?.link||''
+      return normalizeVideo({id,title:item.title,publishedAt:item.pubDate,channel:data.feed?.title||ch.name,thumbnail:thumb})
+    }).filter(Boolean)
+  }))
+  return rows.flat()
+}
+
 async function fromOfficialFRMF(){
   const index=await fetchText(FRMF_VIDEOS)
   const links=articleLinks(index)
@@ -87,6 +103,7 @@ export async function GET(){
   let items=[]
   const errors=[]
   try{items=await fromYouTubeRSS()}catch(e){errors.push('youtube-rss')}
+  if(!items.length){try{items=await fromRSS2JSON()}catch(e){errors.push('rss2json')}}
   if(!items.length){try{items=await fromOfficialFRMF()}catch(e){errors.push('frmf-videotheque')}}
 
   const seen=new Set()
