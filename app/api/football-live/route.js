@@ -18,6 +18,12 @@ function isMoroccoNationalTeam(name){
   const n=norm(name)
   return n==='morocco'||n==='maroc'||n.startsWith('morocco ')||n.startsWith('maroc ')||n.includes('morocco u')||n.includes('maroc u')||n.includes('morocco women')||n.includes('morocco w')||n.includes('morocco olympic')||n.includes('morocco olympics')
 }
+function isRelevantFixture(f){
+  const home=f.teams?.home?.name||''
+  const away=f.teams?.away?.name||''
+  return moroccansForTeam(home).length||moroccansForTeam(away).length||isMoroccoNationalTeam(home)||isMoroccoNationalTeam(away)
+}
+function parisDate(){return new Intl.DateTimeFormat('en-CA',{timeZone:'Europe/Paris',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date())}
 
 async function api(path,revalidate){
  const key=process.env.API_FOOTBALL_KEY
@@ -34,12 +40,8 @@ async function api(path,revalidate){
  return {response:j.response||[],remaining,limit}
 }
 
-export async function GET(){
- try{
-  // Un seul flux live : joueurs marocains à l'étranger + sélections du Maroc.
-  // Les clubs marocains ne sont plus recherchés ni affichés.
-  const {response:fixtures,remaining,limit}=await api('/fixtures?live=all',120)
-  const matches=fixtures.map(f=>{
+function formatMatches(fixtures){
+ return fixtures.map(f=>{
     const homeName=f.teams?.home?.name||''
     const awayName=f.teams?.away?.name||''
     const homePlayers=moroccansForTeam(homeName)
@@ -63,7 +65,31 @@ export async function GET(){
       moroccanNationalMatch
     }
   }).filter(Boolean)
-  return NextResponse.json({ok:true,updatedAt:new Date().toISOString(),matches,refreshSeconds:120,quota:{remaining,limit}},{headers:{'Cache-Control':'public, s-maxage=120, stale-while-revalidate=30'}})
+}
+
+export async function GET(){
+ try{
+  // 1) On ne dépense plus une requête live toutes les 2 minutes toute la journée.
+  // On récupère le programme du jour avec un cache long, puis on active le vrai live
+  // uniquement autour d'un match pertinent (Maroc ou club d'un joueur marocain).
+  const date=parisDate()
+  const schedule=await api(`/fixtures?date=${date}&timezone=Europe%2FParis`,21600)
+  const relevantToday=schedule.response.filter(isRelevantFixture)
+  const now=Date.now()
+  const liveWindow=relevantToday.some(f=>{
+    const kick=new Date(f.fixture?.date||0).getTime()
+    if(!kick)return false
+    return now>=kick-20*60*1000&&now<=kick+3*60*60*1000
+  })
+
+  if(!liveWindow){
+    return NextResponse.json({ok:true,updatedAt:new Date().toISOString(),matches:[],refreshSeconds:120,quota:{remaining:schedule.remaining,limit:schedule.limit},mode:'idle'},{headers:{'Cache-Control':'public, s-maxage=120, stale-while-revalidate=30'}})
+  }
+
+  // 2) Pendant la fenêtre d'un match pertinent, score rafraîchi toutes les 2 minutes.
+  const live=await api('/fixtures?live=all',120)
+  const matches=formatMatches(live.response)
+  return NextResponse.json({ok:true,updatedAt:new Date().toISOString(),matches,refreshSeconds:120,quota:{remaining:live.remaining,limit:live.limit},mode:'live'},{headers:{'Cache-Control':'public, s-maxage=120, stale-while-revalidate=30'}})
  }catch(e){
   const quota=e.quota||e.message==='QUOTA_EXCEEDED'
   return NextResponse.json({ok:false,reason:quota?'quota':'api',error:quota?'Live temporairement indisponible.':e.message,matches:[],refreshSeconds:120},{status:quota?429:500,headers:{'Cache-Control':'no-store'}})
