@@ -6,11 +6,13 @@ export const revalidate=0
 const supabase=createClient(process.env.NEXT_PUBLIC_SUPABASE_URL||'https://czwiqkbojqqdatqohnrs.supabase.co',process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY||'sb_publishable_9H0YCCeSFQ-KgWucLDQ__w_au0A3nqP')
 
 const feeds=[
- {category:'Lions de l’Atlas',q:'Maroc football équipe nationale OR "Lions de l Atlas"'},
+ {category:'Lions de l’Atlas',q:'Maroc football équipe nationale OR "Lions de l Atlas" OR sélection marocaine football masculin'},
+ {category:'Lionnes de l’Atlas',q:'Maroc football féminin OR "Lionnes de l Atlas" OR équipe nationale féminine Maroc OR sélection marocaine féminine'},
  {category:'Botola Pro',q:'Botola Pro football Maroc'},
- {category:'Marocains du monde',q:'("Achraf Hakimi" OR "Brahim Diaz" OR "Yassine Bounou" OR "Youssef En-Nesyri" OR "Sofyan Amrabat" OR "Azzedine Ounahi" OR "Bilal El Khannouss" OR "Ismael Saibari" OR "Nayef Aguerd" OR "Noussair Mazraoui" OR "Soufiane Rahimi") football'},
- {category:'Mercato',q:'mercato joueur marocain football transfert'},
- {category:'Jeunes talents',q:'jeune talent marocain football U20 U23 Maroc'}
+ {category:'Marocains du monde',q:'footballeur marocain OR joueur marocain football club OR international marocain football OR "Achraf Hakimi" OR "Brahim Diaz" OR "Yassine Bounou" OR "Youssef En-Nesyri" OR "Sofyan Amrabat" OR "Azzedine Ounahi" OR "Bilal El Khannouss" OR "Ismael Saibari" OR "Nayef Aguerd" OR "Noussair Mazraoui" OR "Soufiane Rahimi"'},
+ {category:'Marocaines du monde',q:'footballeuse marocaine OR joueuse marocaine football club OR internationale marocaine football OR "Ghizlane Chebbak" OR "Rosella Ayane" OR "Ibtissam Jraidi" OR "Sakina Ouzraoui" OR "Fatima Tagnaout" OR "Hanane Ait El Haj" OR "Kenza Dali" Maroc'},
+ {category:'Mercato',q:'mercato joueur marocain OR joueuse marocaine football transfert'},
+ {category:'Jeunes talents',q:'jeune talent marocain OR jeune joueuse marocaine football U17 U20 U23 Maroc'}
 ]
 
 const featuredItems=[
@@ -59,13 +61,13 @@ export async function GET(){
      const parsed=parse(await r.text(),f.category)
      const seenLocal=new Set()
      return parsed.filter(x=>{const k=x.title.toLowerCase().replace(/\W/g,'');if(seenLocal.has(k))return false;seenLocal.add(k);return true})
-       .sort((a,b)=>new Date(b.publishedAt)-new Date(a.publishedAt)).slice(0,22)
+       .sort((a,b)=>new Date(b.publishedAt)-new Date(a.publishedAt)).slice(0,30)
    }))
 
    const byCategory=[...featuredItems,...results.flatMap(r=>r.status==='fulfilled'?r.value:[])]
    const seen=new Set()
    const items=byCategory.filter(x=>{const k=x.title.toLowerCase().replace(/\W/g,'');if(seen.has(k))return false;seen.add(k);return true})
-     .sort((a,b)=>new Date(b.publishedAt)-new Date(a.publishedAt)).slice(0,100)
+     .sort((a,b)=>new Date(b.publishedAt)-new Date(a.publishedAt)).slice(0,150)
 
    if(items.length){
      const rows=items.map(x=>({slug:x.slug,title:x.title,source:x.source,category:x.category,original_url:x.link,published_at:x.publishedAt||null,summary:x.summary||null,updated_at:new Date().toISOString()}))
