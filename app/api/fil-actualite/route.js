@@ -13,6 +13,18 @@ const feeds=[
  {category:'Jeunes talents',q:'jeune talent marocain football U20 U23 Maroc'}
 ]
 
+const featuredItems=[
+ {
+  title:'Hakimi vise un nouveau trophée avec le PSG face à Lens',
+  source:'AtlasFoot',
+  category:'Marocains du monde',
+  link:'https://www.psg.fr/content/programmation-du-trophee-des-champions-2026-rc-lens-paris-saint-germain',
+  publishedAt:'2026-08-16T11:20:00.000Z',
+  summary:'Quelques jours après la victoire 2-1 du PSG contre Aston Villa en Supercoupe de l’UEFA, Achraf Hakimi enchaîne avec un nouveau rendez-vous ce dimanche 16 août. Paris affronte le RC Lens au Stade Bollaert-Delelis à 20h45 pour le Trophée des Champions 2026.',
+  slug:'hakimi-vise-un-nouveau-trophee-avec-le-psg-face-a-lens-2026-08-16'
+ }
+]
+
 const decode=s=>(s||'')
  .replace(/<!\[CDATA\[|\]\]>/g,'')
  .replace(/&nbsp;|&#160;/gi,' ')
@@ -50,7 +62,7 @@ export async function GET(){
        .sort((a,b)=>new Date(b.publishedAt)-new Date(a.publishedAt)).slice(0,22)
    }))
 
-   const byCategory=results.flatMap(r=>r.status==='fulfilled'?r.value:[])
+   const byCategory=[...featuredItems,...results.flatMap(r=>r.status==='fulfilled'?r.value:[])]
    const seen=new Set()
    const items=byCategory.filter(x=>{const k=x.title.toLowerCase().replace(/\W/g,'');if(seen.has(k))return false;seen.add(k);return true})
      .sort((a,b)=>new Date(b.publishedAt)-new Date(a.publishedAt)).slice(0,100)
