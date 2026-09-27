@@ -1,6 +1,14 @@
 {
-  "updatedAt": "2026-09-27T16:57:37.132163Z",
+  "updatedAt": "2026-09-27T21:20:28.890938Z",
   "items": [
+    {
+      "id": "Wz0ZWW9yh6E",
+      "title": "المنتخب الوطني يجري اول حصة تدريبية بلومفونتين",
+      "channel": "Fédération Royale Marocaine de Football",
+      "publishedAt": "2026-09-27T17:34:06+00:00",
+      "thumbnail": "https://i4.ytimg.com/vi/Wz0ZWW9yh6E/hqdefault.jpg",
+      "url": "https://www.youtube.com/watch?v=Wz0ZWW9yh6E"
+    },
     {
       "id": "2npLjlEmojQ",
       "title": "المنتخب الوطني لاقل من 20 سنة يجري آخر حصة تدريبية قبل لقاء تونس",
@@ -112,14 +120,6 @@
       "publishedAt": "2026-08-30T13:43:40+00:00",
       "thumbnail": "https://i3.ytimg.com/vi/fPmHAatCHQY/hqdefault.jpg",
       "url": "https://www.youtube.com/watch?v=fPmHAatCHQY"
-    },
-    {
-      "id": "szHj0J7wRGE",
-      "title": "تصريحات لاعبين المنتخب الوطني لأقل من 20 سنة عقب المباراة التأهل لنصف النهائي",
-      "channel": "Fédération Royale Marocaine de Football",
-      "publishedAt": "2026-08-26T13:23:26+00:00",
-      "thumbnail": "https://i4.ytimg.com/vi/szHj0J7wRGE/hqdefault.jpg",
-      "url": "https://www.youtube.com/watch?v=szHj0J7wRGE"
     }
   ]
 }
