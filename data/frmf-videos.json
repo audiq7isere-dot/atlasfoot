@@ -1,6 +1,14 @@
 {
-  "updatedAt": "2026-09-28T21:13:39.395508Z",
+  "updatedAt": "2026-09-29T01:00:08.973203Z",
   "items": [
+    {
+      "id": "d0H8oPKf7gk",
+      "title": "المنتخب الوطني لكرة القدم الشاطئية يخوض تجمعا إعداديا بالبرازيل",
+      "channel": "Fédération Royale Marocaine de Football",
+      "publishedAt": "2026-09-28T22:57:23+00:00",
+      "thumbnail": "https://i1.ytimg.com/vi/d0H8oPKf7gk/hqdefault.jpg",
+      "url": "https://www.youtube.com/watch?v=d0H8oPKf7gk"
+    },
     {
       "id": "r_6-xQCcM_k",
       "title": "الندوة الصحافية للسيد محمد وهبي  قبل  مباراة ليسوتو",
@@ -112,14 +120,6 @@
       "publishedAt": "2026-08-31T14:43:08+00:00",
       "thumbnail": "https://i3.ytimg.com/vi/rweJLTg7XwM/hqdefault.jpg",
       "url": "https://www.youtube.com/watch?v=rweJLTg7XwM"
-    },
-    {
-      "id": "newrqB_74-0",
-      "title": "مراسيم تتويج المنتخب الوطني لأقل من 20 سنة بالميدالية البرونزية لألعاب البحر الأبيض المتوسط",
-      "channel": "Fédération Royale Marocaine de Football",
-      "publishedAt": "2026-08-30T22:20:45+00:00",
-      "thumbnail": "https://i3.ytimg.com/vi/newrqB_74-0/hqdefault.jpg",
-      "url": "https://www.youtube.com/watch?v=newrqB_74-0"
     }
   ]
 }
