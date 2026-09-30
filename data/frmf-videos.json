@@ -1,6 +1,14 @@
 {
-  "updatedAt": "2026-09-30T12:33:59.118188Z",
+  "updatedAt": "2026-09-30T20:00:19.866686Z",
   "items": [
+    {
+      "id": "sMWnCHBZsRY",
+      "title": "تصريح لاعبين من المنتخب الوطني لاقل من 20سنة بعد الفوز على الجزائر",
+      "channel": "Fédération Royale Marocaine de Football",
+      "publishedAt": "2026-09-30T17:40:12+00:00",
+      "thumbnail": "https://i4.ytimg.com/vi/sMWnCHBZsRY/hqdefault.jpg",
+      "url": "https://www.youtube.com/watch?v=sMWnCHBZsRY"
+    },
     {
       "id": "9_UZDHplhNI",
       "title": "المنتخب الوطني لكرة القدم الشاطئية يخوض تجمعا إعداديا بالبرازيل",
@@ -112,14 +120,6 @@
       "publishedAt": "2026-09-22T19:25:39+00:00",
       "thumbnail": "https://i1.ytimg.com/vi/PU5VxXxlHVg/hqdefault.jpg",
       "url": "https://www.youtube.com/watch?v=PU5VxXxlHVg"
-    },
-    {
-      "id": "0hHAEyuoyxI",
-      "title": "المنتخب الوطني يباشر تحضيراته للاستحقاقات المقبلة",
-      "channel": "Fédération Royale Marocaine de Football",
-      "publishedAt": "2026-09-21T22:37:47+00:00",
-      "thumbnail": "https://i1.ytimg.com/vi/0hHAEyuoyxI/hqdefault.jpg",
-      "url": "https://www.youtube.com/watch?v=0hHAEyuoyxI"
     }
   ]
 }
