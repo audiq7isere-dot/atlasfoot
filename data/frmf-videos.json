@@ -1,6 +1,14 @@
 {
-  "updatedAt": "2026-10-08T10:33:55.499666Z",
+  "updatedAt": "2026-10-08T18:50:31.840718Z",
   "items": [
+    {
+      "id": "BNf8qngP2Ig",
+      "title": "المنتخب الوطني لكرة القدم داخل القاعة يستعد لكاس أفريقيا",
+      "channel": "Fédération Royale Marocaine de Football",
+      "publishedAt": "2026-10-08T17:35:32+00:00",
+      "thumbnail": "https://i3.ytimg.com/vi/BNf8qngP2Ig/hqdefault.jpg",
+      "url": "https://www.youtube.com/watch?v=BNf8qngP2Ig"
+    },
     {
       "id": "WacKLMg-rEA",
       "title": "المنتخب الوطني لاقل من 20سنة يجري آخر حصة تدريبية قبل لقاء ليبيا",
@@ -112,14 +120,6 @@
       "publishedAt": "2026-09-28T13:35:14+00:00",
       "thumbnail": "https://i3.ytimg.com/vi/r_6-xQCcM_k/hqdefault.jpg",
       "url": "https://www.youtube.com/watch?v=r_6-xQCcM_k"
-    },
-    {
-      "id": "Wz0ZWW9yh6E",
-      "title": "المنتخب الوطني يجري اول حصة تدريبية بلومفونتين",
-      "channel": "Fédération Royale Marocaine de Football",
-      "publishedAt": "2026-09-27T17:34:06+00:00",
-      "thumbnail": "https://i4.ytimg.com/vi/Wz0ZWW9yh6E/hqdefault.jpg",
-      "url": "https://www.youtube.com/watch?v=Wz0ZWW9yh6E"
     }
   ]
 }
