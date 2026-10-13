@@ -1,6 +1,14 @@
 {
-  "updatedAt": "2026-10-12T21:15:58.355657Z",
+  "updatedAt": "2026-10-13T10:34:41.992066Z",
   "items": [
+    {
+      "id": "YWWG6Q5DX2M",
+      "title": "تصريح السيد هشام الدكيك ولاعبي المنتخب الوطني بعد الفوز على الجزائر",
+      "channel": "Fédération Royale Marocaine de Football",
+      "publishedAt": "2026-10-12T22:50:31+00:00",
+      "thumbnail": "https://i2.ytimg.com/vi/YWWG6Q5DX2M/hqdefault.jpg",
+      "url": "https://www.youtube.com/watch?v=YWWG6Q5DX2M"
+    },
     {
       "id": "Rx0SsYojchw",
       "title": "الندوة الصحافية لللسيد هشام الدكيك قبل لقاء الجزائر",
@@ -112,14 +120,6 @@
       "publishedAt": "2026-10-01T21:43:48+00:00",
       "thumbnail": "https://i3.ytimg.com/vi/zKwYuaXVRfg/hqdefault.jpg",
       "url": "https://www.youtube.com/watch?v=zKwYuaXVRfg"
-    },
-    {
-      "id": "sMWnCHBZsRY",
-      "title": "تصريح لاعبين من المنتخب الوطني لاقل من 20سنة بعد الفوز على الجزائر",
-      "channel": "Fédération Royale Marocaine de Football",
-      "publishedAt": "2026-09-30T17:40:12+00:00",
-      "thumbnail": "https://i4.ytimg.com/vi/sMWnCHBZsRY/hqdefault.jpg",
-      "url": "https://www.youtube.com/watch?v=sMWnCHBZsRY"
     }
   ]
 }
