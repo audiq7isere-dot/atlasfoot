@@ -1,6 +1,14 @@
 {
-  "updatedAt": "2026-11-07T12:59:13.033613Z",
+  "updatedAt": "2026-11-07T19:25:11.223394Z",
   "items": [
+    {
+      "id": "1LddXOMKTeE",
+      "title": "تصريحات المنتخب الوطني لكرة القدم الشاطئية بعد الفوز على  سلطنة عمان",
+      "channel": "Fédération Royale Marocaine de Football",
+      "publishedAt": "2026-11-07T17:49:25+00:00",
+      "thumbnail": "https://i2.ytimg.com/vi/1LddXOMKTeE/hqdefault.jpg",
+      "url": "https://www.youtube.com/watch?v=1LddXOMKTeE"
+    },
     {
       "id": "Gu72LhD3KfE",
       "title": "تصريحات المنتخب الوطني لكرة القدم الشاطئية بعد التأهل لنصف نهائي كأس العرب",
@@ -112,14 +120,6 @@
       "publishedAt": "2026-10-18T19:54:39+00:00",
       "thumbnail": "https://i2.ytimg.com/vi/Ewpjqd1m0Ao/hqdefault.jpg",
       "url": "https://www.youtube.com/watch?v=Ewpjqd1m0Ao"
-    },
-    {
-      "id": "A4xQr8spXi4",
-      "title": "تصريحات لاعبات المنتخب الوطني النسوي لاقل من 17 سنة بعد فوزهن امام نيوزيلاندا",
-      "channel": "Fédération Royale Marocaine de Football",
-      "publishedAt": "2026-10-17T21:47:59+00:00",
-      "thumbnail": "https://i2.ytimg.com/vi/A4xQr8spXi4/hqdefault.jpg",
-      "url": "https://www.youtube.com/watch?v=A4xQr8spXi4"
     }
   ]
 }
