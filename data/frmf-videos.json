@@ -1,6 +1,14 @@
 {
-  "updatedAt": "2026-11-08T17:55:26.896535Z",
+  "updatedAt": "2026-11-08T22:03:28.033458Z",
   "items": [
+    {
+      "id": "qVYAUCjPwHw",
+      "title": "حفل تدشين ملعب FIFA ARENA بابن جرير",
+      "channel": "Fédération Royale Marocaine de Football",
+      "publishedAt": "2026-11-08T17:51:28+00:00",
+      "thumbnail": "https://i2.ytimg.com/vi/qVYAUCjPwHw/hqdefault.jpg",
+      "url": "https://www.youtube.com/watch?v=qVYAUCjPwHw"
+    },
     {
       "id": "1LddXOMKTeE",
       "title": "تصريحات المنتخب الوطني لكرة القدم الشاطئية بعد الفوز على  سلطنة عمان",
@@ -112,14 +120,6 @@
       "publishedAt": "2026-10-20T00:54:05+00:00",
       "thumbnail": "https://i4.ytimg.com/vi/WomeFcLoWB8/hqdefault.jpg",
       "url": "https://www.youtube.com/watch?v=WomeFcLoWB8"
-    },
-    {
-      "id": "Ewpjqd1m0Ao",
-      "title": "تصريحات المنتخب الوطني لكرة القدم الشاطئية بعد التأهل لنهائيات كأس افريقيا",
-      "channel": "Fédération Royale Marocaine de Football",
-      "publishedAt": "2026-10-18T19:54:39+00:00",
-      "thumbnail": "https://i2.ytimg.com/vi/Ewpjqd1m0Ao/hqdefault.jpg",
-      "url": "https://www.youtube.com/watch?v=Ewpjqd1m0Ao"
     }
   ]
 }
