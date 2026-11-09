@@ -1,6 +1,14 @@
 {
-  "updatedAt": "2026-11-08T22:03:28.033458Z",
+  "updatedAt": "2026-11-09T19:48:48.351312Z",
   "items": [
+    {
+      "id": "rpdBLDv7jik",
+      "title": "تصريحات لاعبي المنتخب الوطني لكرة القدم الشاطئية بعد التتويج بلقب كأس العرب",
+      "channel": "Fédération Royale Marocaine de Football",
+      "publishedAt": "2026-11-09T13:51:22+00:00",
+      "thumbnail": "https://i3.ytimg.com/vi/rpdBLDv7jik/hqdefault.jpg",
+      "url": "https://www.youtube.com/watch?v=rpdBLDv7jik"
+    },
     {
       "id": "qVYAUCjPwHw",
       "title": "حفل تدشين ملعب FIFA ARENA بابن جرير",
@@ -112,14 +120,6 @@
       "publishedAt": "2026-10-20T01:10:37+00:00",
       "thumbnail": "https://i4.ytimg.com/vi/KzJL7QEjc74/hqdefault.jpg",
       "url": "https://www.youtube.com/watch?v=KzJL7QEjc74"
-    },
-    {
-      "id": "WomeFcLoWB8",
-      "title": "كأس العالم للسيدات لأقل من 17 سنة: المنتخب الوطني ينهي استعداداته لملاقاة ألمانيا",
-      "channel": "Fédération Royale Marocaine de Football",
-      "publishedAt": "2026-10-20T00:54:05+00:00",
-      "thumbnail": "https://i4.ytimg.com/vi/WomeFcLoWB8/hqdefault.jpg",
-      "url": "https://www.youtube.com/watch?v=WomeFcLoWB8"
     }
   ]
 }
