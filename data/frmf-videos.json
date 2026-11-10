@@ -1,6 +1,14 @@
 {
-  "updatedAt": "2026-11-09T19:48:48.351312Z",
+  "updatedAt": "2026-11-10T14:51:44.303086Z",
   "items": [
+    {
+      "id": "6RPZJDx-qDY",
+      "title": "انطلاق تداريب المنتخب الوطني استعدادا لمباراتي النيجر",
+      "channel": "Fédération Royale Marocaine de Football",
+      "publishedAt": "2026-11-09T21:55:45+00:00",
+      "thumbnail": "https://i3.ytimg.com/vi/6RPZJDx-qDY/hqdefault.jpg",
+      "url": "https://www.youtube.com/watch?v=6RPZJDx-qDY"
+    },
     {
       "id": "rpdBLDv7jik",
       "title": "تصريحات لاعبي المنتخب الوطني لكرة القدم الشاطئية بعد التتويج بلقب كأس العرب",
@@ -112,14 +120,6 @@
       "publishedAt": "2026-10-20T12:09:41+00:00",
       "thumbnail": "https://i2.ytimg.com/vi/16bD1RPZ7so/hqdefault.jpg",
       "url": "https://www.youtube.com/watch?v=16bD1RPZ7so"
-    },
-    {
-      "id": "KzJL7QEjc74",
-      "title": "تصريحات مدرب ولاعبي المنتخب الوطني لكرة القدم داخل القاعة بعد الفوز على مصر",
-      "channel": "Fédération Royale Marocaine de Football",
-      "publishedAt": "2026-10-20T01:10:37+00:00",
-      "thumbnail": "https://i4.ytimg.com/vi/KzJL7QEjc74/hqdefault.jpg",
-      "url": "https://www.youtube.com/watch?v=KzJL7QEjc74"
     }
   ]
 }
