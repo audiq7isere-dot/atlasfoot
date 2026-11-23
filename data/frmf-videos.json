@@ -1,6 +1,14 @@
 {
-  "updatedAt": "2026-11-22T19:38:28.986021Z",
+  "updatedAt": "2026-11-23T01:41:26.620667Z",
   "items": [
+    {
+      "id": "G9wxANx4Gqo",
+      "title": "كأس العالم FIFA لأقل من 17 سنة : المنتخب الوطني ينهي استعداداته للمباراة التي ستجمعه بالصين",
+      "channel": "Fédération Royale Marocaine de Football",
+      "publishedAt": "2026-11-22T20:38:24+00:00",
+      "thumbnail": "https://i4.ytimg.com/vi/G9wxANx4Gqo/hqdefault.jpg",
+      "url": "https://www.youtube.com/watch?v=G9wxANx4Gqo"
+    },
     {
       "id": "3EUxYLOGdbY",
       "title": "المنتخب الوطني لكرة القدم الشاطئية يواصل استعداداته لكأس افريقيا",
@@ -112,14 +120,6 @@
       "publishedAt": "2026-11-10T19:57:10+00:00",
       "thumbnail": "https://i4.ytimg.com/vi/_eMiv3mDeos/hqdefault.jpg",
       "url": "https://www.youtube.com/watch?v=_eMiv3mDeos"
-    },
-    {
-      "id": "6RPZJDx-qDY",
-      "title": "انطلاق تداريب المنتخب الوطني استعدادا لمباراتي النيجر",
-      "channel": "Fédération Royale Marocaine de Football",
-      "publishedAt": "2026-11-09T21:55:45+00:00",
-      "thumbnail": "https://i3.ytimg.com/vi/6RPZJDx-qDY/hqdefault.jpg",
-      "url": "https://www.youtube.com/watch?v=6RPZJDx-qDY"
     }
   ]
 }
