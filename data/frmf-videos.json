@@ -1,6 +1,14 @@
 {
-  "updatedAt": "2026-11-23T12:37:16.275500Z",
+  "updatedAt": "2026-11-24T02:11:57.019093Z",
   "items": [
+    {
+      "id": "8gG6scigCm0",
+      "title": "تصريح مدرب المنتخب الوطني لأقل من 17 سنة و اللاعب لعرج",
+      "channel": "Fédération Royale Marocaine de Football",
+      "publishedAt": "2026-11-23T22:25:48+00:00",
+      "thumbnail": "https://i1.ytimg.com/vi/8gG6scigCm0/hqdefault.jpg",
+      "url": "https://www.youtube.com/watch?v=8gG6scigCm0"
+    },
     {
       "id": "G9wxANx4Gqo",
       "title": "كأس العالم FIFA لأقل من 17 سنة : المنتخب الوطني ينهي استعداداته للمباراة التي ستجمعه بالصين",
@@ -112,14 +120,6 @@
       "publishedAt": "2026-11-11T17:45:20+00:00",
       "thumbnail": "https://i2.ytimg.com/vi/Ic8T6hQlEDs/hqdefault.jpg",
       "url": "https://www.youtube.com/watch?v=Ic8T6hQlEDs"
-    },
-    {
-      "id": "_eMiv3mDeos",
-      "title": "أسود الأطلس يواصلون استعداداتهم بمركب محمد السادس لكرة القدم",
-      "channel": "Fédération Royale Marocaine de Football",
-      "publishedAt": "2026-11-10T19:57:10+00:00",
-      "thumbnail": "https://i4.ytimg.com/vi/_eMiv3mDeos/hqdefault.jpg",
-      "url": "https://www.youtube.com/watch?v=_eMiv3mDeos"
     }
   ]
 }
